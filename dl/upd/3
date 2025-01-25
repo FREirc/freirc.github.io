@@ -50,9 +50,9 @@ echo 检查本地内容：
 cd /d %~dp0
 
 del 25F3BB.jar
-
+del .minecraft\mods\25F3Meth.jar
 del 25F3Meth.jar
-
+del .minecraft\mods\25F3BB.jar
 wget https://yun.urldwz.com/f/rO0hD/25F3Meth.jar
 
 wget https://yun.urldwz.com/f/7ZoUj/25F3BB.jar
@@ -60,16 +60,6 @@ wget https://yun.urldwz.com/f/7ZoUj/25F3BB.jar
 move 25F3BB.jar .minecraft\mods\25F3BB.jar
 
 move 25F3Meth.jar.minecraft\mods\25F3Meth.jar
-
-if exist .minecraft\mods\25F3BB.jar (
-
-    echo 25F3BB.jar 已成功更新 
-)   
-
-if exist.minecraft\mods\25F3Meth.jar (
-
-    echo 25F3Meth.jar 已成功更新  
-)
 
 echo 0.3版本更新已完成。
 
