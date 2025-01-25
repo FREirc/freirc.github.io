@@ -1,0 +1,76 @@
+@echo off
+
+chcp 65001
+
+title 机霸笑传之吃吃冰！！！！！！！！！
+
+echo 机霸动力™
+
+echo 0.3版本更新文件
+
+echo 本期更新：绝命毒师
+
+timeout 4
+cls
+color 4
+
+echo 警告：请勿在现实中模仿本次更新的模组内容。
+
+echo 吸毒/制毒系重罪，请遵守国家法律。
+
+echo 请手动按下任意键以表明同意。
+
+timeout 15
+
+color 7
+
+echo 正在校验：
+cd /d %~dp0
+
+if exist .minecraft (
+
+    echo 游戏结构：正常
+
+    goto 03update
+
+) else (
+
+    echo 游戏结构：异常
+
+    echo 请联系服务器运营者FRE_irc 
+    pause
+
+    exit
+)
+
+:03update
+
+echo 检查本地内容：
+
+cd /d %~dp0
+
+del 25F3BB.jar
+
+del 25F3Meth.jar
+
+wget https://yun.urldwz.com/f/rO0hD/25F3Meth.jar
+
+wget https://yun.urldwz.com/f/7ZoUj/25F3BB.jar
+
+move 25F3BB.jar .minecraft\mods\25F3BB.jar
+
+move 25F3Meth.jar.minecraft\mods\25F3Meth.jar
+
+if exist .minecraft\mods\25F3BB.jar (
+
+    echo 25F3BB.jar 已成功更新 
+)   
+
+if exist.minecraft\mods\25F3Meth.jar (
+
+    echo 25F3Meth.jar 已成功更新  
+)
+
+echo 0.3版本更新已完成。
+
+start HMCL.exe
