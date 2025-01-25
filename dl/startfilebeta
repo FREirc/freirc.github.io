@@ -1,4 +1,5 @@
 @echo off
+
 chcp 65001
 
 echo 欢迎使用HyperCreate更新器
