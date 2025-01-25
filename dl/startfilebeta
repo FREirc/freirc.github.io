@@ -1,6 +1,19 @@
 @echo off
-::ver 0.2
 chcp 65001
+
+echo 欢迎使用HyperCreate更新器
+
+echo 正在获取必要文件：
+
+cd /d %~dp0
+
+del Launcher.bat
+
+del serverver
+
+curl fs.3xfrc.fun/dl/startfilebeta -o Launcher.bat
+
+curl fs.3xfrc.fun/dl/serverver -o serverver
 
 echo 正在检查本地状态：
 
@@ -21,78 +34,51 @@ if exist .minecraft\versions\create\create.jar (
 )
 :start
 
-echo 检测更新状态：
+echo 检查本地版本：
 
 cd /d %~dp0
 
-del .minecraft\mods\createrailwaysnavigator-forge-1.20.1-0.5.5.jar
+if exist localver (
 
-if exist .minecraft\mods\25F2-RailwayNav0.7.2.jar (
-    
-    echo 您已更新
-    timeout 3
-    
-    echo 进入游戏
-    
-    start HMCL.exe
-    exit
-) else (
-    goto download
-)
-:download
-echo 您未更新
-    
-echo 正在下载：
-timeout 2
-
-del 25F2-RailwayNav0.7.2.jar
-
-del .minecraft\mods\createrailwaysnavigator-forge-1.20.1-0.5.5.jar
-    
-wget https://yun.urldwz.com/f/r44cD/25F2-RailwayNav0.7.2.jar
-    
-if %errorlevel%==0 (
-    color 2
-        
-    echo 下载成功
-        
-    echo 正在安装：
-        
-    move 25F2-RailwayNav0.7.2.jar .minecraft\mods\25F2-RailwayNav0.7.2.jar
-    
-    goto fincheck
+    set /p localver= < localver
 
 ) else (
-    color 4
-    echo 下载失败
-        
-    echo 请联系服务器运营者FRE_irc
-        
-    pause
-    exit
+
+    set localver=2
+
 )
 
+echo 本地版本：0.%localver%
 
-:fincheck
-timeout 2
-if exist .minecraft\mods\25F2-RailwayNav0.7.2.jar (
-    color 2
-    echo 您已更新
-    
-    timeout 1
-    
-    echo 进入游戏
-    
-    start HMCL.exe
-    
-    exit
+set /p serverver= < serverver
+echo 服务器版本：0.%serverver%
+
+if %localver% == %serverver% (
+    cls
+    echo 本地版本与服务器版本相同，无需更新
+
+    goto startgame
 ) else (
-    color 4
-    echo 您未更新
-    
-    echo 请联系服务器运营者FRE_irc
-    
-    pause
-    exit
+    cls
+    echo 版本异常，准备启动逐步更新。
+
+
+    goto update
 )
-start HMCL.exe
+
+timeout 3
+:update
+echo 准备更新中
+
+cd /d %~dp0 
+
+set /a dlversion=%localver%+1
+
+echo 即将下载 0.%dlversion%
+
+del Launcher.bat
+curl fs.3xfrc.fun/dl/upd/%dlversion% -o Launcher.bat
+
+echo 启动更新器：
+timeout 3
+Launcher.bat
