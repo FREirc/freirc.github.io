@@ -59,8 +59,11 @@ wget https://yun.urldwz.com/f/7ZoUj/25F3BB.jar
 
 move 25F3BB.jar .minecraft\mods\25F3BB.jar
 
-move 25F3Meth.jar.minecraft\mods\25F3Meth.jar
+move 25F3Meth.jar .minecraft\mods\25F3Meth.jar
 
 echo 0.3版本更新已完成。
+
+del localver
+echo 3 > localver
 
 start HMCL.exe
