@@ -57,7 +57,7 @@ if %localver% == %serverver% (
     cls
     echo 本地版本与服务器版本相同，无需更新
 
-    goto startgame
+    start HMCL.exe
 ) else (
     cls
     echo 版本异常，准备启动逐步更新。
