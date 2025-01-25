@@ -1,0 +1,84 @@
+@echo off
+chcp 65001
+
+echo 欢迎使用HyperCreate更新器
+
+echo 正在获取必要文件：
+
+cd /d %~dp0
+
+del Launcher.bat
+
+del serverver
+
+curl fs.3xfrc.fun/dl/startfilebeta -o Launcher.bat
+
+curl fs.3xfrc.fun/dl/serverver -o serverver
+
+echo 正在检查本地状态：
+
+cd /d %~dp0
+if exist .minecraft\versions\create\create.jar (
+    
+    echo 游戏结构：正常
+    
+    goto start
+) else (
+    
+    echo 游戏结构：异常
+    
+    echo 请联系服务器运营者FRE_irc
+    
+    pause
+    exit
+)
+:start
+
+echo 检查本地版本：
+
+cd /d %~dp0
+
+if exist localver (
+
+    set /p localver= < localver
+
+) else (
+
+    set localver=2
+
+)
+
+echo 本地版本：0.%localver%
+
+set /p serverver= < serverver
+echo 服务器版本：0.%serverver%
+
+if %localver% == %serverver% (
+    cls
+    echo 本地版本与服务器版本相同，无需更新
+
+    goto startgame
+) else (
+    cls
+    echo 版本异常，准备启动逐步更新。
+
+
+    goto update
+)
+
+timeout 3
+:update
+echo 准备更新中
+
+cd /d %~dp0 
+
+set /a dlversion=%localver%+1
+
+echo 即将下载 0.%dlversion%
+
+del Launcher.bat
+curl fs.3xfrc.fun/dl/upd/%dlversion% -o Launcher.bat
+
+echo 启动更新器：
+timeout 3
+Launcher.bat
