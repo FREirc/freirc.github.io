@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>camcord</title>
+    <script>
+        function accessCamera() {
+            const video = document.getElementById("video");
+            // 创建一个媒体流请求对象
+            const constraints = { video: true, audio: false };
+            // 使用getUserMedia方法访问摄像头
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    // 将视频流赋值给video元素的src属性，以显示摄像头的视频
+                    video.srcObject = stream;
+
+                })
+                .catch(function(error) {
+                    console.error("访问摄像头失败：", error);
+                });
+        }
+ 
+        function takePhoto() {
+            const video = document.getElementById("video");
+            // 使用canvas捕获图像数据
+            const canvas = document.createElement("canvas");
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(video, 0, 0);
+            // 将图像数据保存为图片文件
+            const dataUrl = canvas.toDataURL();
+            saveAs(canvas.toDataURL(), "photo.jpg");
+        }
+        function saveAs(data, filename) {
+            const link = document.createElement("a");
+            link.href = data;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</head>
+<body>
+<h1>camcord</h1>
+<button onclick="accessCamera()">access</button>
+<button onclick="takePhoto()">save</button>
+<video id="video" width="0%" height="0%" autoplay></video>
+</body>
+</html>
