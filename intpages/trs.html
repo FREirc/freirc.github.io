@@ -78,7 +78,7 @@
       }, 100); // 每100毫秒更新一次
 
       const prompt = `Translate from ${srcLang} to ${tgtLang}:\n\n${srcText}, you must follow the remark: ${remText}. 
-      If you dont understand what the source language and target language are, please respond with "输入的____出现问题，请检查".`;
+      If you dont understand what the source language and target language are, please respond with "输入的____出现问题，请检查". If the user only send a single word or phrase, explain all the meaning of it.`;
 
       try {
         const resp = await fetch(SILICONFLOW_ENDPOINT, {
@@ -128,4 +128,5 @@
     });
   </script>
 </body>
+
 </html>
