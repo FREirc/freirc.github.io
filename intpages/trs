@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FRC_trs</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; max-width:800px; }
+    label { display:block; margin-top:10px; }
+    input, textarea, select { width:100%; padding:8px; box-sizing:border-box; }
+    textarea { min-height:120px; }
+    button { margin-top:10px; padding:8px 12px; }
+    #status { margin-top:8px; color:#555; }
+  </style>
+</head>
+<body>
+  <h2>FRE_trans v1.0</h2>
+  <h>自由的内部前端翻译工具</h>
+
+  <label>源语言（例如：zh / auto / Chinese）：
+    <input id="srcLang" value="auto" />
+  </label>
+
+  <label>目标语言（例如：en / French / fr）：
+    <input id="tgtLang" value="en" />
+  </label>
+
+  <label>输入：
+    <textarea id="srcText" placeholder="输入需要翻译的文本...">你好，世界！</textarea>
+  </label>
+
+  <button id="translateBtn">翻译</button>
+  <div id="status"></div>
+
+  <label>输出：
+    <textarea id="outText" readonly placeholder="翻译结果..."></textarea>
+  </label>
+
+  <script>
+    const SILICONFLOW_ENDPOINT = "https://api.siliconflow.cn/v1/chat/completions"; 
+    const SILICONFLOW_MODEL = "Pro/deepseek-ai/DeepSeek-V3.2-Exp"; 
+    const API_KEY = "sk-xdvpppqpqmokmthttsaasxldgkjdsdxfduntgrrsrrtlylcz"; 
+
+    const btn = document.getElementById('translateBtn');
+    const statusEl = document.getElementById('status');
+    const outEl = document.getElementById('outText');
+
+    btn.addEventListener('click', async () => {
+      const srcLang = document.getElementById('srcLang').value.trim();
+      const tgtLang = document.getElementById('tgtLang').value.trim();
+      const srcText = document.getElementById('srcText').value.trim();
+      if (!srcText) return alert('请输入要翻译的文本');
+
+      statusEl.textContent = '翻译中…';
+      outEl.value = '';
+
+      const prompt = `Translate from ${srcLang} to ${tgtLang}:\n\n${srcText}`;
+
+      try {
+        const resp = await fetch(SILICONFLOW_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${API_KEY}`
+          },
+          body: JSON.stringify({
+            model: SILICONFLOW_MODEL,
+            messages: [
+              { role: "system", content: "You are a helpful translator." },
+              { role: "user", content: prompt }
+            ],
+            max_tokens: 800,
+            temperature: 0.2
+          })
+        });
+
+        if (!resp.ok) {
+          const txt = await resp.text();
+          throw new Error(`HTTP ${resp.status}: ${txt}`);
+        }
+
+        const data = await resp.json();
+
+        let translation = '';
+        if (data.choices && data.choices[0]) {
+          translation = data.choices[0].message?.content ?? data.choices[0].text ?? '';
+        }
+        if (!translation) {
+          translation = data.output || data.result || JSON.stringify(data);
+        }
+
+        outEl.value = translation;
+        statusEl.textContent = '翻译完成';
+      } catch (err) {
+        statusEl.textContent = '请求失败：' + err.message;
+        outEl.value = '';
+        console.error(err);
+      }
+    });
+  </script>
+</body>
+</html>
