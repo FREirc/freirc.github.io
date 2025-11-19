@@ -11,30 +11,37 @@
     textarea { min-height:120px; }
     button { margin-top:10px; padding:8px 12px; }
     #status { margin-top:8px; color:#555; }
+    #timer { margin-top:8px; color:#666; font-weight: bold; }
   </style>
 </head>
 <body>
-  <h2>FRE_trans v1.0</h2>
-  <h>自由的内部前端翻译工具</h>
+  <h2>FRC_trans v1.0</h2>
+  <h>内部用前端翻译工具</h>
 
-  <label>源语言（例如：zh / auto / Chinese）：
+  <label>源语言（例如：中文/Chinese/zh）：
     <input id="srcLang" value="auto" />
   </label>
 
-  <label>目标语言（例如：en / French / fr）：
-    <input id="tgtLang" value="en" />
+  <label>目标语言（例如：英文/English/en）：
+    <input id="tgtLang" value="auto" />
   </label>
 
   <label>输入：
     <textarea id="srcText" placeholder="输入需要翻译的文本...">你好，世界！</textarea>
   </label>
 
+  <label>备注内容：
+    <textarea id="remText" placeholder="请输入备注内容...">请保证翻译结果的准确性和完整性。如果有特殊字符（如表情符号等）或符号，请保持在适当位置。</textarea>
+  </label>
+
   <button id="translateBtn">翻译</button>
   <div id="status"></div>
+  <div id="timer"></div> <!-- 添加计时器显示元素 -->
 
   <label>输出：
     <textarea id="outText" readonly placeholder="翻译结果..."></textarea>
   </label>
+  
 
   <script>
     const SILICONFLOW_ENDPOINT = "https://api.siliconflow.cn/v1/chat/completions"; 
@@ -44,17 +51,36 @@
     const btn = document.getElementById('translateBtn');
     const statusEl = document.getElementById('status');
     const outEl = document.getElementById('outText');
+    const timerEl = document.getElementById('timer'); // 获取计时器元素
+    let startTime, timerInterval;
+
+    // 格式化时间显示函数
+    function formatTime(milliseconds) {
+      const seconds = (milliseconds / 1000).toFixed(2);
+      return `${seconds}秒`;
+    }
 
     btn.addEventListener('click', async () => {
       const srcLang = document.getElementById('srcLang').value.trim();
       const tgtLang = document.getElementById('tgtLang').value.trim();
       const srcText = document.getElementById('srcText').value.trim();
+      const remText = document.getElementById('remText').value.trim();
       if (!srcText) return alert('请输入要翻译的文本');
 
-      statusEl.textContent = '翻译中…';
-      outEl.value = '';
+      // 开始计时
+      startTime = new Date().getTime();
+      statusEl.textContent = '正在翻译...';
+      timerEl.textContent = '0.00秒';
+      
+      // 设置实时更新计时器
+      timerInterval = setInterval(() => {
+        const currentTime = new Date().getTime();
+        const elapsedTime = currentTime - startTime;
+        timerEl.textContent = formatTime(elapsedTime);
+      }, 100); // 每100毫秒更新一次
 
-      const prompt = `Translate from ${srcLang} to ${tgtLang}:\n\n${srcText}`;
+      const prompt = `Translate from ${srcLang} to ${tgtLang}:\n\n${srcText}, you must follow the remark: ${remText}. 
+      If you dont understand what the source language and target language are, please respond with "输入的____出现问题，请检查".`;
 
       try {
         const resp = await fetch(SILICONFLOW_ENDPOINT, {
@@ -95,6 +121,11 @@
         statusEl.textContent = '请求失败：' + err.message;
         outEl.value = '';
         console.error(err);
+      } finally {
+        // 停止计时器
+        clearInterval(timerInterval);
+        const totalTime = new Date().getTime() - startTime;
+        timerEl.textContent = `翻译用时：${formatTime(totalTime)}`;
       }
     });
   </script>
