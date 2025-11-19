@@ -36,7 +36,7 @@
 
   <button id="translateBtn">翻译</button>
   <div id="status"></div>
-  <div id="timer"></div> <!-- 添加计时器显示元素 -->
+  <div id="timer"></div> 
 
   <label>输出：
     <textarea id="outText" readonly placeholder="翻译结果..."></textarea>
@@ -51,10 +51,9 @@
     const btn = document.getElementById('translateBtn');
     const statusEl = document.getElementById('status');
     const outEl = document.getElementById('outText');
-    const timerEl = document.getElementById('timer'); // 获取计时器元素
+    const timerEl = document.getElementById('timer'); 
     let startTime, timerInterval;
 
-    // 格式化时间显示函数
     function formatTime(milliseconds) {
       const seconds = (milliseconds / 1000).toFixed(2);
       return `${seconds}秒`;
@@ -67,12 +66,11 @@
       const remText = document.getElementById('remText').value.trim();
       if (!srcText) return alert('请输入要翻译的文本');
 
-      // 开始计时
       startTime = new Date().getTime();
       statusEl.textContent = '正在翻译...';
       timerEl.textContent = '0.00秒';
       
-      // 设置实时更新计时器
+
       timerInterval = setInterval(() => {
         const currentTime = new Date().getTime();
         const elapsedTime = currentTime - startTime;
