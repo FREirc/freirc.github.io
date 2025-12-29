@@ -311,6 +311,9 @@
             cursor: pointer;
             font-size: 13px;
             border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .session-item:hover {
@@ -322,12 +325,102 @@
             font-weight: bold;
         }
         
+        /* 删除按钮样式 */
+        .delete-session-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+        
+        .delete-session-btn:hover {
+            background-color: #ffeeee;
+            color: #ff4d4f;
+        }
+        
         /* 状态消息 */
         .status-message {
             text-align: center;
             color: #666;
             font-size: 14px;
             margin: 20px 0;
+        }
+        
+        /* Markdown样式 */
+        .message-content h1, .message-content h2, .message-content h3 {
+            margin: 10px 0;
+        }
+        
+        .message-content h1 {
+            font-size: 24px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .message-content h2 {
+            font-size: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .message-content h3 {
+            font-size: 18px;
+        }
+        
+        .message-content strong {
+            font-weight: bold;
+        }
+        
+        .message-content em {
+            font-style: italic;
+        }
+        
+        .message-content ul, .message-content ol {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .message-content li {
+            margin: 5px 0;
+        }
+        
+        .message-content code {
+            background-color: rgba(27, 31, 35, 0.05);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .message-content pre {
+            background-color: rgba(27, 31, 35, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .message-content pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        .message-content a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .message-content a:hover {
+            text-decoration: underline;
+        }
+        
+        .message-content blockquote {
+            border-left: 4px solid #ddd;
+            padding-left: 10px;
+            color: #666;
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -543,13 +636,33 @@
                 const session = sessions[sessionId];
                 const sessionItem = document.createElement('div');
                 sessionItem.className = 'session-item';
-                sessionItem.textContent = session.name;
                 sessionItem.dataset.sessionId = sessionId;
                 
-                sessionItem.addEventListener('click', () => {
+                // 创建会话名称元素
+                const sessionName = document.createElement('span');
+                sessionName.textContent = session.name;
+                sessionName.style.flex = '1';
+                
+                // 创建删除按钮
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'delete-session-btn';
+                deleteBtn.textContent = 'x';
+                deleteBtn.title = '删除会话';
+                
+                // 添加删除事件
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 阻止事件冒泡，避免触发会话切换
+                    deleteSession(sessionId);
+                });
+                
+                // 添加会话切换事件
+                sessionName.addEventListener('click', () => {
                     switchSession(sessionId);
                 });
                 
+                // 组装会话项
+                sessionItem.appendChild(sessionName);
+                sessionItem.appendChild(deleteBtn);
                 sessionList.appendChild(sessionItem);
             });
             
@@ -565,6 +678,31 @@
                     item.classList.remove('active');
                 }
             });
+        }
+        
+        // 删除会话函数
+        function deleteSession(sessionId) {
+            // 确认对话框
+            if (confirm('确定要删除这个会话吗？删除后将无法恢复。')) {
+                const sessions = getSessions();
+                
+                // 删除会话
+                delete sessions[sessionId];
+                saveSessions(sessions);
+                
+                // 如果删除的是当前会话，切换到另一个会话或创建新会话
+                if (currentSessionId === sessionId) {
+                    const remainingSessionIds = Object.keys(sessions);
+                    if (remainingSessionIds.length > 0) {
+                        switchSession(remainingSessionIds[0]);
+                    } else {
+                        createNewSession();
+                    }
+                }
+                
+                // 更新会话列表
+                loadSessions();
+            }
         }
         
         function getSessions() {
@@ -589,6 +727,43 @@
             });
         }
         
+        // Markdown解析函数
+        function parseMarkdown(text) {
+            // 转换标题
+            text = text.replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            text = text.replace(/^## (.*$)/gm, '<h2>$1</h2>');
+            text = text.replace(/^### (.*$)/gm, '<h3>$1</h3>');
+            
+            // 转换粗体和斜体
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // 转换无序列表
+            text = text.replace(/^\* (.*$)/gm, '<ul><li>$1</li></ul>');
+            text = text.replace(/<\/ul>\s*<ul>/g, '');
+            
+            // 转换有序列表
+            text = text.replace(/^\d+\. (.*$)/gm, '<ol><li>$1</li></ol>');
+            text = text.replace(/<\/ol>\s*<ol>/g, '');
+            
+            // 转换链接
+            text = text.replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+            
+            // 转换行内代码
+            text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            // 转换代码块
+            text = text.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+            
+            // 转换引用
+            text = text.replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>');
+            
+            // 转换换行
+            text = text.replace(/\n/g, '<br>');
+            
+            return text;
+        }
+        
         // 聊天功能
         function loadChatHistory() {
             const sessions = getSessions();
@@ -600,7 +775,7 @@
             }
             
             if (currentSession.messages.length === 0) {
-                chatHistory.innerHTML = '<div class="status-message">新会话</div>''
+                chatHistory.innerHTML = '<div class="status-message">新会话</div>'
                 return;
             }
             
@@ -642,6 +817,14 @@
             
             // 发送API请求
             try {
+                // 获取当前会话的所有消息，转换为API要求的格式
+                const sessions = getSessions();
+                const currentSession = sessions[currentSessionId];
+                const messagesForApi = currentSession.messages.map(msg => ({
+                    role: msg.sender === 'user' ? 'user' : 'assistant',
+                    content: msg.content
+                }));
+                
                 const response = await fetch('https://api.siliconflow.cn/v1/chat/completions', {
                     method: 'POST',
                     headers: {
@@ -650,7 +833,7 @@
                     },
                     body: JSON.stringify({
                         model: 'deepseek-ai/DeepSeek-V3.2',
-                        messages: [{ role: 'user', content: message }],
+                        messages: messagesForApi,
                         temperature: 0.7
                     })
                 });
@@ -686,7 +869,9 @@
             
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            contentDiv.textContent = content;
+            
+            // 使用Markdown解析函数转换内容
+            contentDiv.innerHTML = parseMarkdown(content);
             
             messageDiv.appendChild(contentDiv);
             
@@ -738,7 +923,4 @@
         window.addEventListener('load', initApp);
     </script>
 </body>
-
 </html>
-
-
