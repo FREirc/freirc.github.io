@@ -372,7 +372,7 @@
             <div class="status-message">在开始前，请先在右上角菜单设置密钥</div>
         </div>
         <div class="chat-input-area">
-            <textarea id="message-input" placeholder="输入您的问题..."></textarea>
+            <textarea id="message-input" placeholder="输入..."></textarea>
             <button id="send-button">发送</button>
         </div>
     </div>
@@ -600,7 +600,7 @@
             }
             
             if (currentSession.messages.length === 0) {
-                chatHistory.innerHTML = '<div class="status-message">这是一个新会话，开始聊天吧！</div>';
+                chatHistory.innerHTML = '<div class="status-message">新会话</div>''
                 return;
             }
             
@@ -740,4 +740,5 @@
 </body>
 
 </html>
+
 
