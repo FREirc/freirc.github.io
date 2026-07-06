@@ -1,0 +1,295 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --bg: #eef1f2;
+  --panel: #fbfcfa;
+  --text: #191816;
+  --muted: #626a67;
+  --line: #cfd7d3;
+  --accent: #256f7a;
+  --accent-dark: #174e57;
+  --note: #db5a42;
+  --note-edge: #9e382b;
+  --key-dark: #292724;
+  --grid-strong: #aab8b4;
+  --grid-soft: #dde5e1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 18px;
+  gap: 16px;
+}
+
+.topbar {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+#summary,
+.paneHeader span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.transportCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.sessionTools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sessionTools select {
+  max-width: 220px;
+}
+
+#beatCounter {
+  min-width: 74px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--text);
+  font-family: "Cascadia Mono", Consolas, Monaco, monospace;
+  font-size: 14px;
+  text-align: center;
+}
+
+.transport label,
+.rollTools label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+button {
+  min-width: 76px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  padding: 9px 13px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-dark);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+button.secondary {
+  background: #39403e;
+}
+
+button.secondary:hover:not(:disabled) {
+  background: #252b29;
+}
+
+input[type="number"] {
+  width: 74px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 8px;
+  background: white;
+}
+
+select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 7px 8px;
+  background: white;
+  color: var(--text);
+}
+
+input[type="range"] {
+  width: 132px;
+  accent-color: var(--accent);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(320px, var(--roll-width, 58%)) 10px minmax(280px, 1fr);
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+}
+
+.splitter {
+  min-height: 0;
+  border-radius: 6px;
+  cursor: col-resize;
+  background: linear-gradient(90deg, transparent 0 3px, var(--line) 3px 7px, transparent 7px 10px);
+}
+
+.splitter:hover,
+.splitter:focus-visible {
+  background: linear-gradient(90deg, transparent 0 3px, var(--accent) 3px 7px, transparent 7px 10px);
+  outline: none;
+}
+
+.editorPane,
+.rollPane {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  overflow: hidden;
+}
+
+.paneHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rollPane .paneHeader {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.rollTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rollPane #rangeLabel {
+  margin-left: auto;
+}
+
+textarea {
+  flex: 1;
+  min-height: 420px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  padding: 14px;
+  background: #ffffff;
+  color: var(--text);
+  font-family: "Cascadia Mono", Consolas, Monaco, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  tab-size: 2;
+}
+
+.rollScroller {
+  position: relative;
+  flex: 1;
+  min-height: 420px;
+  overflow: auto;
+  background: #ffffff;
+}
+
+canvas {
+  display: block;
+  cursor: crosshair;
+}
+
+@media (max-width: 860px) {
+  .shell {
+    padding: 10px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .transportCenter {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .sessionTools {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .splitter {
+    display: none;
+  }
+
+  .editorPane,
+  .rollPane,
+  textarea,
+  .rollScroller {
+    min-height: 330px;
+  }
+}
