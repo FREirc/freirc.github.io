@@ -1,0 +1,81 @@
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ABC Piano Roll 编辑器</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1>ABC Piano Roll 编辑器</h1>
+          <p id="summary">0 个音符</p>
+        </div>
+        <div class="transportCenter" aria-label="Playback controls">
+          <button id="playButton" type="button" title="开始播放">开始</button>
+          <button id="pauseButton" class="secondary" type="button" title="暂停播放">暂停</button>
+          <button id="stopButton" class="secondary" type="button" title="停止并回到开头">停止</button>
+          <output id="beatCounter" aria-label="当前小节和拍点">01:01:0</output>
+        </div>
+        <div class="sessionTools" aria-label="Session controls">
+          <button id="saveSessionButton" type="button" title="保存当前会话">保存</button>
+          <select id="sessionSelect" aria-label="已保存会话">
+            <option value="">无已保存会话</option>
+          </select>
+          <button id="loadSessionButton" class="secondary" type="button" title="加载选中的会话">加载</button>
+          <button id="deleteSessionButton" class="secondary" type="button" title="删除选中的会话">删除</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <section class="rollPane" aria-label="Piano roll">
+          <div class="paneHeader">
+            <h2>Piano Roll</h2>
+            <div class="rollTools" aria-label="Piano roll controls">
+              <button id="deleteButton" class="secondary" type="button" title="删除选中的音符" disabled>删除</button>
+              <label>
+                BPM
+                <input id="tempoInput" type="number" min="30" max="240" step="1" value="120" />
+              </label>
+              <label>
+                缩放
+                <input id="zoomInput" type="range" min="42" max="180" value="88" />
+              </label>
+              <label>
+                吸附
+                <select id="snapInput">
+                  <option value="1">1/4</option>
+                  <option value="0.5" selected>1/8</option>
+                  <option value="0.25">1/16</option>
+                  <option value="1/3">1/12</option>
+                  <option value="2/3">1/6</option>
+                  <option value="4/3">1/3</option>
+                  <option value="2">1/2</option>
+                </select>
+              </label>
+            </div>
+            <span id="rangeLabel">点击选择，拖拽生成</span>
+          </div>
+          <div id="rollScroller" class="rollScroller">
+            <canvas id="rollCanvas" width="1200" height="640"></canvas>
+          </div>
+        </section>
+
+        <div id="splitter" class="splitter" role="separator" aria-label="调整钢琴窗和 ABC 窗口比例" aria-orientation="vertical" tabindex="0"></div>
+
+        <section class="editorPane" aria-label="ABC editor">
+          <div class="paneHeader">
+            <h2>ABC</h2>
+            <span id="status">就绪</span>
+          </div>
+          <textarea id="abcInput" spellcheck="false" aria-label="ABC notation source"></textarea>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
